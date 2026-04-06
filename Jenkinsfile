@@ -7,22 +7,16 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install --upgrade pip'
-                bat 'python -m pip install -r requirements.txt'
+                sh 'python3 -m pip install --upgrade pip'
+                sh 'python3 -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests with Coverage') {
             steps {
-                bat 'python -m pytest'
+                sh 'python3 -m pytest'
             }
         }
 
@@ -31,14 +25,14 @@ pipeline {
                 script {
                     def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv('SonarQube') {
-                        bat """
-                        "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                          -Dsonar.projectKey=%SONAR_PROJECT_KEY% ^
-                          -Dsonar.projectName=%SONAR_PROJECT_NAME% ^
-                          -Dsonar.sources=src ^
-                          -Dsonar.tests=tests ^
-                          -Dsonar.python.version=3.13 ^
-                          -Dsonar.python.coverage.reportPaths=coverage.xml ^
+                        sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                          -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
+                          -Dsonar.sources=src \
+                          -Dsonar.tests=tests \
+                          -Dsonar.python.version=3.13 \
+                          -Dsonar.python.coverage.reportPaths=coverage.xml \
                           -Dsonar.sourceEncoding=UTF-8
                         """
                     }
