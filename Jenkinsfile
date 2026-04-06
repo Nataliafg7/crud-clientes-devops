@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_PROJECT_KEY = 'Crud-clientes'
+        SONAR_PROJECT_KEY = 'CRUD-clientes'
         SONAR_PROJECT_NAME = 'CRUD Clientes'
         VENV_DIR = '.venv'
     }
